@@ -5,14 +5,16 @@ import { useState } from "react";
 
 type Stage = "starting" | "operating" | "growing";
 
-const stages: Record<Stage, {
+type StageDetails = {
   tab: string;
   title: string;
   intro: string;
   description: string;
   image: string;
   services: { label: string; icon: string }[];
-}> = {
+};
+
+const stages: Record<Stage, StageDetails> = {
   starting: {
     tab: "Al empezar",
     title: "Estás por formalizar tu negocio",
@@ -60,6 +62,26 @@ const stages: Record<Stage, {
   },
 };
 
+function ServiceDetails({ stage, mobile = false }: { stage: StageDetails; mobile?: boolean }) {
+  return (
+    <div className={`services__detail${mobile ? " services__detail--mobile" : ""}`}>
+      <div className="services__photo">
+        <Image src={stage.image} alt="Personas trabajando en su empresa" fill sizes="(max-width: 760px) 292px, 653px" />
+      </div>
+      <p className="services__description">{stage.description}</p>
+
+      <div className="service-grid">
+        {stage.services.map((service) => (
+          <article className="service-card" key={service.label}>
+            <img src={service.icon} alt="" width="29" height="25" />
+            <p>{service.label}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function Services() {
   const [active, setActive] = useState<Stage>("starting");
   const stage = stages[active];
@@ -67,54 +89,56 @@ export function Services() {
   return (
     <section className="services section section--dark" id="servicios">
       <div className="services__pattern" aria-hidden="true">
-        <img src="/assets/figma/desktop-group14.svg" alt="" />
+        <img className="services__pattern-shape services__pattern-shape--a" src="/assets/figma/desktop-group27.svg" alt="" />
+        <img className="services__pattern-shape services__pattern-shape--b" src="/assets/figma/desktop-group28.svg" alt="" />
       </div>
       <div className="container services__content">
         <span className="eyebrow eyebrow--light">Servicios</span>
         <h2>Cobertura legal completa para <em>tu empresa</em></h2>
 
-        <div className="services__intro">
-          <div>
+        <div className="services__workspace">
+          <div className="services__selector">
             <p className="services__kicker">Mi empresa está...</p>
             <div className="service-tabs" role="tablist" aria-label="Etapa de la empresa">
               {(Object.keys(stages) as Stage[]).map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  role="tab"
-                  aria-selected={active === key}
-                  className={active === key ? "is-active" : ""}
-                  onClick={() => setActive(key)}
-                >
-                  {stages[key].tab}<span aria-hidden="true">+</span>
-                </button>
+                <div className={`service-tab-row${active === key ? " is-active" : ""}`} role="presentation" key={key}>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={active === key}
+                    aria-controls={`service-stage-panel-${key}`}
+                    aria-expanded={active === key}
+                    className={active === key ? "is-active" : ""}
+                    onClick={() => setActive(key)}
+                  >
+                    <span className="service-tab-label">{stages[key].tab}</span>
+                    {active === key && <span className="service-tab-summary">{stage.title}</span>}
+                    <span className="service-tab-toggle" aria-hidden="true">+</span>
+                  </button>
+                  {active === key && <h3 className="services__desktop-stage-title">{stage.title}</h3>}
+                  {active === key && (
+                    <div
+                      className="services__mobile-expansion"
+                      id={`service-stage-panel-${key}`}
+                      role="tabpanel"
+                    >
+                      <ServiceDetails stage={stage} mobile />
+                      <p className="services__intro-copy services__intro-copy--mobile">{stage.intro}</p>
+                      <a className="button services__cta services__cta--mobile" href="#contacto">Conversemos por WhatsApp</a>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
+            <p className="services__intro-copy services__intro-copy--desktop">{stage.intro}</p>
           </div>
-          <div className="services__lead">
-            <h3>{stage.title}</h3>
-            <p>{stage.intro}</p>
+
+          <div className="services__desktop-detail" id="service-stage-panel" role="tabpanel">
+            <ServiceDetails stage={stage} />
           </div>
         </div>
 
-        <div className="services__visual">
-          <div className="services__photo">
-            <Image src={stage.image} alt="Personas trabajando en su empresa" fill sizes="(max-width: 760px) 100vw, 50vw" />
-          </div>
-          <div className="services__summary">
-            <p>{stage.description}</p>
-            <a className="button button--light" href="#contacto">Conversemos por WhatsApp</a>
-          </div>
-        </div>
-
-        <div className="service-grid">
-          {stage.services.map((service) => (
-            <article className="service-card" key={service.label}>
-              <img src={service.icon} alt="" width="29" height="25" />
-              <p>{service.label}</p>
-            </article>
-          ))}
-        </div>
+        <a className="button services__cta services__cta--desktop" href="#contacto">Conversemos por WhatsApp</a>
       </div>
     </section>
   );

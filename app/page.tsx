@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Header } from "./components/Header";
+import { HeroCarousel } from "./components/HeroCarousel";
 import { Logo } from "./components/Logo";
 import { Services } from "./components/Services";
 
@@ -56,14 +57,7 @@ export default function Home() {
   return (
     <main>
       <section className="hero" id="inicio">
-        <Image
-          className="hero__image"
-          src="/assets/photos/desktop-cs-foto101.webp"
-          alt="Reunión de asesoría legal entre dos profesionales"
-          fill
-          priority
-          sizes="100vw"
-        />
+        <HeroCarousel />
         <img className="hero__overlay" src="/assets/figma/desktop-vector.svg" alt="" />
         <Header />
         <div className="container hero__content">
@@ -71,7 +65,6 @@ export default function Home() {
           <p>Acompañamos a emprendedores y empresas en crecimiento con un enfoque preventivo, estratégico y orientado a resultados — desde el inicio y en cada etapa.</p>
           <a className="button button--primary" href="#contacto">Agenda consulta</a>
         </div>
-        <img className="hero__dots" src="/assets/figma/desktop-group2030.svg" alt="" width="74" height="16" />
       </section>
 
       <section className="about section" id="nosotros">
